@@ -2,7 +2,7 @@
 
 This is an appointment booking webapp made with django.
 
-### Live Demo : [![UIDAI HACKATHON](./core/static/images/favicon.ico)Skin Studio](/#)
+### Live Demo : [![UIDAI Hackathon](./core/static/images/favicon.ico)](/)
 
 
 ## Technology Stack
