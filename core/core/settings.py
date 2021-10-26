@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'domain_user'
 ]
 
 MIDDLEWARE = [
@@ -174,3 +176,4 @@ EMAIL_HOST_USER = 'hospitalfinder98@gmail.com'
 LOGIN_URL = '/users/login/'
 LOGOUT_REDIRECT_URL = '/'
 PASSWORD_RESET_TIMEOUT = 1800   # The number of seconds a password reset link is valid for.
+AUTH_USER_MODEL = 'domain_user.CustomUser'
