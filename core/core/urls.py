@@ -19,4 +19,5 @@ from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('html_test', include('html_test.urls')),
 ]

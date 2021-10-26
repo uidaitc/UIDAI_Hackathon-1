@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'domain_user'
+    # 'domain_user'
+    'html_test'
 ]
 
 MIDDLEWARE = [
