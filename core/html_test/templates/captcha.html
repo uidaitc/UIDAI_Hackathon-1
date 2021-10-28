@@ -18,11 +18,14 @@
         <input type="text" name="captcha_value" id="captcha_value" placeholder="captcha">
         <button type="button" onclick="getOTP()">Get OTP</button>
         <input type="text" name="otp_value" id="otp_value" placeholder="otp">
-        <button disabled="disabled" id="submit">Submit</button>
+        <button disabled="disabled" id="submit" onclick="getVID()">Submit</button>
     </div>
+
+
     <script>
         var captcha_data;
         var otp_data;
+        var vid_data;
         function getCaptcha() {
             $.ajax({
                 type: 'get',
@@ -80,8 +83,13 @@
         function getVID() {
             $.ajax({
                 type: 'post',
-                url: '/html_test/otp/',
-                data: JSON.stringify({ "captchaTxnId": captcha_data["captchaTxnId"], "captcha_value": document.getElementById("captcha_value").value, "uid": document.getElementById("uid").value }),
+                url: '/html_test/vid/',
+                data: JSON.stringify({
+                    "uid": document.getElementById("uid").value,
+                    "mobile_no": document.getElementById("mobile_no").value,
+                    "otp_value": document.getElementById("otp_value").value,
+                    "txnId": otp_data["txnId"]
+                }),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -89,15 +97,18 @@
                 },
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
-                    otp_data = data;
-                    otp_value.removeAttribute("hidden");
-                    submit.removeAttribute("disabled");
+                    // data = JSON.parse(data);
+                    vid_data = data;
+                    document.getElementById("generate_vid_form").innerHTML = `
+                    <p> ${data["vid"]} </p>
+                    `
                 },
                 error: function (data) {
                     console.log(data);
                 }
             });
         }
+
         window.addEventListener("load", () => getCaptcha());
     </script>
 </body>
