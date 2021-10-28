@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="generate_vid_form">
+        <input type="text" name="uid" id="uid" placeholder="uid">
+        <input type="text" name="mobile_no" id="mobile_no" placeholder="phone">
+        <img id="captcha">
+        <button type="button" onclick="getCaptcha()">Reload</button>
+        <input type="text" name="captcha_value" id="captcha_value" placeholder="captcha">
+        <button type="button" onclick="getOTP()">Get OTP</button>
+        <input type="text" name="otp_value" id="otp_value" placeholder="otp">
+        <button disabled="disabled" id="submit">Submit</button>
+    </div>
+    <script>
+        var captcha_data;
+        var otp_data;
+        function getCaptcha() {
+            $.ajax({
+                type: 'get',
+                url: '/html_test/captcha',
+                data: JSON.stringify({ "langCode": "en", "captchaLength": "3", "captchaType": "2" }),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    captcha_data = data;
+                    captcha.setAttribute('src', "data:image/jpg;base64," + data['captchaBase64String']);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function getOTP() {
+            $.ajax({
+                type: 'post',
+                url: '/html_test/otp/',
+                data: JSON.stringify({ "captchaTxnId": captcha_data["captchaTxnId"], "captcha_value": document.getElementById("captcha_value").value, "uid": document.getElementById("uid").value }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    otp_data = data;
+                    otp_value.removeAttribute("hidden");
+                    submit.removeAttribute("disabled");
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function getVID() {
+            $.ajax({
+                type: 'post',
+                url: '/html_test/otp/',
+                data: JSON.stringify({ "captchaTxnId": captcha_data["captchaTxnId"], "captcha_value": document.getElementById("captcha_value").value, "uid": document.getElementById("uid").value }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    otp_data = data;
+                    otp_value.removeAttribute("hidden");
+                    submit.removeAttribute("disabled");
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        window.addEventListener("load", () => getCaptcha());
+    </script>
+</body>
+
+</html>
