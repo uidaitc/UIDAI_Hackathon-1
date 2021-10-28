@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'domain_user',
     'html_test',
+    'sso_provider',
 ]
 
 MIDDLEWARE = [
