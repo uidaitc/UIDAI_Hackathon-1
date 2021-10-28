@@ -5,5 +5,5 @@ urlpatterns = [
     path("", views.index),
     path("captcha/", views.get_captcha),
     path("otp/", views.get_otp),
-    
+    path("vid/", views.get_vid),
 ]

@@ -64,14 +64,12 @@ def get_vid(request):
         "uid": request.data["uid"],
         "mobile": request.data["mobile_no"],
         "otp": request.data["otp_value"],
-        "otpTxnId": request.data["txn_id"],
+        "otpTxnId": request.data["txnId"],
     }
-    data = json.loads(
-        requests.post(
-            "https://stage1.uidai.gov.in/vidwrapper/generate",
-            json=body,
-            headers={"Content-Type": "application/json"},
-        ).text
-    )
+    data = json.loads(requests.post(
+        "https://stage1.uidai.gov.in/vidwrapper/generate",
+        json=body,
+        headers={"Content-Type": "application/json"},
+    ).text)
     print(data)
-    return Response(data={data["vid"]})
+    return Response(data=data)
