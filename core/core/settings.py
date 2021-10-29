@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'rest_framework',
     'domain_user',
     'html_test',
@@ -54,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -179,3 +182,8 @@ LOGIN_URL = '/users/login/'
 LOGOUT_REDIRECT_URL = '/'
 PASSWORD_RESET_TIMEOUT = 1800   # The number of seconds a password reset link is valid for.
 AUTH_USER_MODEL = 'domain_user.CustomUser'
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:8001",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
