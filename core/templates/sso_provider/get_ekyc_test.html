@@ -18,18 +18,19 @@
         <input type="text" name="captcha_value" id="captcha_value" placeholder="captcha">
         <button type="button" onclick="getOTP()">Get OTP</button>
         <input type="text" name="otp_value" id="otp_value" placeholder="otp">
-        <button disabled="disabled" id="submit" onclick="getVID()">Submit</button>
+        <input type="password" name="password" id="password">
+        <button disabled="disabled" id="submit" onclick="getEKYC()">Submit</button>
     </div>
 
 
     <script>
         var captcha_data;
         var otp_data;
-        var vid_data;
+        var ekyc_data;
         function getCaptcha() {
             $.ajax({
                 type: 'get',
-                url: '/html_test/captcha',
+                url: '/sso/get_captcha',
                 data: JSON.stringify({ "langCode": "en", "captchaLength": "3", "captchaType": "2" }),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -61,7 +62,7 @@
         function getOTP() {
             $.ajax({
                 type: 'post',
-                url: '/html_test/otp/',
+                url: '/sso/get_otp/',
                 data: JSON.stringify({ "captchaTxnId": captcha_data["captchaTxnId"], "captcha_value": document.getElementById("captcha_value").value, "uid": document.getElementById("uid").value }),
                 headers: {
                     'Accept': 'application/json',
@@ -80,14 +81,24 @@
             });
         }
 
-        function getVID() {
+        function download(filename, data) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;base64,' + data);
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function getEKYC() {
             $.ajax({
                 type: 'post',
-                url: '/html_test/vid/',
+                url: '/sso/get_ekyc/',
                 data: JSON.stringify({
                     "uid": document.getElementById("uid").value,
-                    "mobile_no": document.getElementById("mobile_no").value,
-                    "otp_value": document.getElementById("otp_value").value,
+                    "password": document.getElementById("password").value,
+                    "otp": document.getElementById("otp_value").value,
                     "txnId": otp_data["txnId"]
                 }),
                 headers: {
@@ -97,11 +108,8 @@
                 },
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
-                    // data = JSON.parse(data);
-                    vid_data = data;
-                    document.getElementById("generate_vid_form").innerHTML = `
-                    <p> ${data["vid"]} </p>
-                    `
+                    ekyc_data = data;
+                    download(data["fileName"], data["eKycXML"]);
                 },
                 error: function (data) {
                     console.log(data);

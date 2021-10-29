@@ -15,5 +15,5 @@ photo_base64 = data[3].text
 print(poi)
 print(poa)
 
-with open("online_ekyc_photo.png", "wb") as f:
-    f.write(b64decode(photo_base64))
+# with open("online_ekyc_photo.png", "wb") as f:
+#     f.write(b64decode(photo_base64))

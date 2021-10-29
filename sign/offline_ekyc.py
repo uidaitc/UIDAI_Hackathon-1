@@ -10,6 +10,7 @@ def get_captcha() -> Response:
         headers={"Content-Type": "application/json"},
     )
 
+
 def generate_OTP(captcha_txn_id: str, captcha_value: str, uid_number: str) -> Response:
     txn_ID = str(uuid4())
     headers = {
@@ -30,11 +31,12 @@ def generate_OTP(captcha_txn_id: str, captcha_value: str, uid_number: str) -> Re
         headers=headers,
     )
 
+
 def get_eKYC(txn_ID: str, otp: str, password: str, uid: str) -> Response:
     body = {
         "txnNumber": txn_ID,
         "otp": otp,
-        "shareCode": password, #4digits only
+        "shareCode": password,  # 4digits only
         "uid": uid,
     }
     return requests.post(
