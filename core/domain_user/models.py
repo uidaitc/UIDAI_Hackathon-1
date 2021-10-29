@@ -8,10 +8,10 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
+    api_key = models.CharField(max_length=100, blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -27,8 +27,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Domain(models.Model):
-    name = models.CharField(max_length=200)
-    key = models.SlugField(max_length=200, unique=True)
+    domain = models.CharField(max_length=200)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    domain_key = models.CharField(max_length=100)
     def __str__(self):
-        return self.name
+        return self.user.email + ' - ' + self.domain
