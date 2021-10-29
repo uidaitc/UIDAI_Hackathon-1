@@ -6,13 +6,14 @@ from .managers import CustomUserManager
 
 # Create your models here.
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_("email address"), unique=True)
     api_key = models.CharField(max_length=100, blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
@@ -26,9 +27,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.email
 
+
 class Domain(models.Model):
-    domain = models.CharField(max_length=200)
+    domain = models.CharField(max_length=200) #origin
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    domain_key = models.CharField(max_length=100)
+    permission = models.CharField(max_length=200, blank=True, null=True) #permissions
+    domain_key = models.CharField(max_length=100) #aipkey
+
     def __str__(self):
-        return self.user.email + ' - ' + self.domain
+        return self.user.email + " - " + self.domain
