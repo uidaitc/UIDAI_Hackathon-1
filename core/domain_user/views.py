@@ -5,6 +5,7 @@ from domain_user.models import CustomUser, Domain
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+import json
 
 # Create your views here.
 def loggin(request):
@@ -55,18 +56,22 @@ def register(request):
 def dashboard(request):
     return render(request, "domain_user/dashboard.html")
 
+
 @csrf_exempt
 @api_view(["POST"])
 def check_permission(request):
+    # TODO: have to handle the error
     domain = Domain.objects.filter(
         domain=request.data["origin"], domain_key=request.data["apikey"]
     )
     if domain:
         permissions = set(domain[0].permission.split(",")).intersection(
-            set(request.data["permissions"])
+            set(json.loads(request.data["permissions"]))
         )
+        print(permissions)
         return Response(
-            data={"result": True, "permissions": permissions}, status=status.HTTP_200_OK
+            data={"result": True, "permissions": permissions},
+            status=status.HTTP_200_OK,
         )
     else:
         return Response(
