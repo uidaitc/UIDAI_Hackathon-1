@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
 from domain_user.models import CustomUser, Domain
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -54,7 +55,7 @@ def register(request):
 def dashboard(request):
     return render(request, "domain_user/dashboard.html")
 
-
+@csrf_exempt
 @api_view(["POST"])
 def check_permission(request):
     domain = Domain.objects.filter(
