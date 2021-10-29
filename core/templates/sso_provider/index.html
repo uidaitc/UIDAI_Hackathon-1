@@ -23,14 +23,10 @@
             onParentCommunication: onParentCommunication
         });
         // child.init()
-
-        var html = '';
-
         function onParentDisconnect() {
             alert('<li>Login Cancelled(</li>');
             window.close();
         }
-
         function sendToParent(msg) {
             var tabInfo = child.getTabInfo();
             var data = {
@@ -39,14 +35,11 @@
             };
             child.sendMessageToParent(data);
         }
-
         function closeTab() {
             window.close();
         }
-
         function onInitialize() {
             var tabInfo = child.getTabInfo();
-
             var data ={
                 "parent":tabInfo.parentName,
                 "id":tabInfo.id ,
@@ -56,7 +49,6 @@
             sendToParent({"head":"loaded","body":"sendPermissions"})
             // showList(data);
         }
-
         function onReady() {
             // Fetch vid,phone no. and ekyc from localstorage. If not present, ask user to enter vid/uid for ekyc generation.
             var data = 'Page Loaded';
