@@ -1,0 +1,22 @@
+<script src="https://cdn.jsdelivr.net/combine/npm/@zip.js/zip.js@2.3.18/dist/zip.min.js,npm/@zip.js/zip.js@2.3.18/dist/zip.min.js">
+
+a =new zip.Data64URIReader('base64encoded string')
+const reader = new zip.ZipReader(a)
+const entries = await reader.getEntries()
+if (entries.length) {
+
+  // get first entry content as text by using a TextWriter
+  const text = await entries[0].getData(
+    // writer
+    new zip.TextWriter(),
+    // options
+    { password:'1234',
+      onprogress: (index, max) => {
+         // onprogress callback
+      }
+    }
+  );
+  // text contains the entry data as a String
+  console.log(text);
+
+}
