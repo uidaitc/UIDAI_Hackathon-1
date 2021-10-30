@@ -55,6 +55,9 @@ def register(request):
 
 
 def dashboard(request):
+    data={}
+    if request.user.is_authenticated:
+        data["domains"]=Domain.objects.filter(user=request.user)
     return render(request, "domain_user/dashboard.html")
 
 

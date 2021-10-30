@@ -42,7 +42,7 @@ def get_otp(request):
                 "uidNumber": request.data["uid"],
                 "captchaTxnId": request.data["captchaTxnId"],
                 "captchaValue": request.data["captcha_value"],
-                "transactionId": "MYAADHAAR:59142477-3f57-465d-8b9a-75b28fe48725",
+                "transactionId": "MYAADHAAR:" + txn_ID,
             }
             data = json.loads(
                 requests.post(

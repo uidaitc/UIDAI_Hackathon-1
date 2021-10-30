@@ -187,3 +187,4 @@ AUTH_USER_MODEL = 'domain_user.CustomUser'
 #     "http://127.0.0.1:8001",
 # ]
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_URLS_REGEX = r'^.*/api/.*$'
