@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 
+
 # Create your views here.
 def loggin(request):
     if request.user.is_authenticated:
