@@ -28,7 +28,24 @@ def ekyc(request):
 def get_captcha(request):
     """
     used to generate captcha
+
+    Method
+    ------
+    GET
+
+    Returns
+    -------
+    Response
+        data = {
+            "status": "Success",
+            "captchaBase64String": "xxxxx",                     # base64 encoded string of a photo
+            "captchaTxnId": "JQ7lDnCazDEO",
+            "requestedDate": "2021-10-29",
+            "statusCode": 200,
+            "message": "SUCCESS",
+        }
     """
+
     try:
         data = json.loads(
             requests.post(
@@ -47,7 +64,28 @@ def get_captcha(request):
 def get_otp(request):
     """
     used to generate otp
+
+    Method
+    ------
+    POST
+        Parameters
+        ----------
+            uid: uid or aadhaar number of the user
+            captchaTxnId: captchaTxnId generated during captcha creation
+            captcha_value: value of the captcha entered byt he user
+
+    Returns
+    -------
+    Response
+        data = {
+            "uidNumber": xxxxx,
+            "mobileNumber": 0,
+            "txnId": "mAadhaar:xxx-xxxx-xx-xx-xxx",
+            "status": "Success",
+            "message": "OTP generation done successfully",
+        }
     """
+
     try:
         txn_ID = str(uuid4())
         headers = {
@@ -60,7 +98,7 @@ def get_otp(request):
             "uidNumber": request.data["uid"],
             "captchaTxnId": request.data["captchaTxnId"],
             "captchaValue": request.data["captcha_value"],
-            "transactionId": "MYAADHAAR:59142477-3f57-465d-8b9a-75b28fe48725",
+            "transactionId": f"MYAADHAAR:{txn_ID}",
         }
         data = json.loads(
             requests.post(
@@ -80,7 +118,28 @@ def get_otp(request):
 def get_vid(request):
     """
     used to generate vid for a user
+
+    Method
+    ------
+    POST
+        Parameters
+        ----------
+            uid: uid or aadhaar number of the user
+            mobile_no: mobile number of the user
+            otp: otp received by the user
+            txnId: txnId generated during otp creation
+
+    Returns
+    -------
+    Response
+        data = {
+            "status": "Success",
+            "vid": "xxxxx",
+            "message": "Successfully generated the Vid for Aadhaar: xxxxx",
+            "ErrorCode": None,
+        }
     """
+
     try:
         body = {
             "uid": request.data["uid"],
@@ -105,8 +164,42 @@ def get_vid(request):
 @api_view(["POST"])
 def get_data(request):
     """
-    Used to get the data of a user
+    Used to get all the data of a user
+
+    Method
+    ------
+    POST
+        Parameters
+        ----------
+            uid: uid or aadhaar number of the user
+            otp: otp received by the user
+            txnId: txnId generated during otp creation
+
+    Returns
+    -------
+    Response
+        data = {
+            "poi": {
+                "dob": "dd-mm-yyyy",
+                "gender": "M",
+                "name": "xxxxx",
+                "phone": "xxxxxxxxxx",
+            },
+            "poa": {
+                "co": "C/O Barnali Guha Ghosh Dastidar",
+                "country": "India",
+                "dist": "Kolkata",
+                "house": "75",
+                "lm": "BEHIND 8B BUS STAND",
+                "pc": "700032",
+                "state": "West Bengal",
+                "street": "IBRAHIMPUR ROAD",
+                "vtc": "Jadavpur University",
+            },
+            "photo": "xxxxx"                                    # base64 encoded string of a photo
+        }
     """
+
     try:
         body = {
             "txnId": request.data["txnId"],
@@ -153,6 +246,29 @@ def get_data(request):
 
 @api_view(["POST"])
 def get_ekyc(request):
+    """
+    Used to get offline eKyc zip file of a user
+
+    Method
+    ------
+    POST
+        Parameters
+        ----------
+            uid: uid or aadhaar number of the user
+            otp: otp received by the user
+            txnId: txnId generated during otp creation
+            password: password for the zip file given by the user
+
+    Returns
+    -------
+        data = {
+            "eKycXML": "xxxxx",                                 # base64 encoded string of offline eKyc zip file of a user
+            "fileName": "offlineaadhaarxxxxx.zip",
+            "status": "Success",
+            "requestDate": "2021-10-28",
+            "uidNumber": "xxxxx",
+        }
+    """
     try:
         body = {
             "txnNumber": request.data["txnId"],
