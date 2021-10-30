@@ -60,20 +60,22 @@ def dashboard(request):
 @csrf_exempt
 @api_view(["POST"])
 def check_permission(request):
-    # TODO: have to handle the error
-    domain = Domain.objects.filter(
-        domain=request.data["origin"], domain_key=request.data["apikey"]
-    )
-    if domain:
-        permissions = set(domain[0].permission.split(",")).intersection(
-            set(json.loads(request.data["permissions"]))
+    try:
+        domain = Domain.objects.filter(
+            domain=request.data["origin"], domain_key=request.data["apikey"]
         )
-        print(permissions)
-        return Response(
-            data={"result": True, "permissions": permissions},
-            status=status.HTTP_200_OK,
-        )
-    else:
-        return Response(
-            data={"result": False, "permissions": {}}, status=status.HTTP_200_OK
-        )
+        if domain:
+            permissions = set(domain[0].permission.split(",")).intersection(
+                set(json.loads(request.data["permissions"]))
+            )
+            print(permissions)
+            return Response(
+                data={"result": True, "permissions": permissions},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={"result": False, "permissions": {}}, status=status.HTTP_200_OK
+            )
+    except:
+        return Response(data={}, status=status.HTTP_400_BAD_REQUEST)
