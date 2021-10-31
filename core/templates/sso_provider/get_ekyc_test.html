@@ -108,6 +108,8 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     ekyc_data = data;
+                    localStorage.setItem("aadhaarZipBase64", data["eKycXML"]);
+                    localStorage.setItem("aadhaarFileName", data["fileName"]);
                     download(data["fileName"], data["eKycXML"]);
                 },
                 error: function (data) {

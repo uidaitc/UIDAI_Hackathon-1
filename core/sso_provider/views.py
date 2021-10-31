@@ -1,4 +1,6 @@
+from functools import partial
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 from rest_framework.decorators import api_view
@@ -6,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from uuid import uuid4
 import xml.etree.ElementTree as ET
+from domain_user.models import Domain
 
 
 def index(request):
@@ -295,3 +298,59 @@ def get_ekyc(request):
     except Exception as e:
         print(e)
         return Response(data={}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def scan_qr(request):
+    return render(request, "sso_provider/scan_qr.html")
+
+
+@csrf_exempt
+@api_view(["POST"])
+def post_qr(request):
+    """
+    Used to post data of a user
+
+    Method
+    ------
+    POST
+        Parameters
+        ----------
+            eKycXML: content of the xml file
+            apiKey: apiKey of the QR scan
+
+    Returns
+    -------
+        data = { "status": "Success", "message": "Successfully uploaded the file" }
+    """
+    try:
+        print(request.data)
+        domain = Domain.objects.filter(
+            domain_key=request.data["apiKey"]
+        )
+        if domain:
+            # print(domain)
+            body = {
+                "eKycXML": request.data["eKycXML"],
+            }
+            requests.post(
+                domain[0].ekycxml_endpoint,
+                headers={"Content-Type": "application/json"},
+                json=body,
+            )
+            return Response(
+                data={"status": "Success", "message": "Successfully uploaded the file"},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={"status": "Failure", "message": "Invalid API key"},
+            )
+    except Exception as e:
+        print(e)
+        return Response(
+            data={
+                "status": "Error",
+                "message": "Error occured while uploading the file",
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
