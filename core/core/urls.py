@@ -22,17 +22,17 @@ from django.views.generic import TemplateView, RedirectView
 from django.contrib import admin
 
 
-admin.site.site_header = "Skin Studio"
-admin.site.site_title = "Skin Studio - Admin Portal"
-admin.site.index_title = "Welcome to Skin Studio"
-admin.site.login_template = "domain_user/login.html"
-auth_views.PasswordResetView.template_name = 'password_reset_form.html'
-auth_views.PasswordResetView.email_template_name = 'password_reset_email.html'
-auth_views.PasswordResetDoneView.template_name = 'password_reset_done.html'
-auth_views.PasswordResetConfirmView.template_name = 'password_reset_confirm.html'
-auth_views.PasswordResetCompleteView.template_name = 'password_reset_complete.html'
-auth_views.PasswordChangeView.template_name = 'password_change_form.html'
-auth_views.PasswordChangeDoneView.template_name = 'password_change_done.html'
+admin.site.site_header = "Aadhaar SSO"
+admin.site.site_title = "Aadhaar SSO - Admin Portal"
+admin.site.index_title = "Welcome to Aadhaar SSO"
+# admin.site.login_template = "domain_user/login.html"
+# auth_views.PasswordResetView.template_name = 'password_reset_form.html'
+# auth_views.PasswordResetView.email_template_name = 'password_reset_email.html'
+# auth_views.PasswordResetDoneView.template_name = 'password_reset_done.html'
+# auth_views.PasswordResetConfirmView.template_name = 'password_reset_confirm.html'
+# auth_views.PasswordResetCompleteView.template_name = 'password_reset_complete.html'
+# auth_views.PasswordChangeView.template_name = 'password_change_form.html'
+# auth_views.PasswordChangeDoneView.template_name = 'password_change_done.html'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
