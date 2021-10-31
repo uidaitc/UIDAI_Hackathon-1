@@ -39,8 +39,9 @@
         </div>
     </nav>
     {%block content%}
-    <div style="background-color: #F2F2F2; padding: 10pt;">
         {% if user.is_authenticated %}
+        
+    <div style="background-color: #F2F2F2; padding: 10pt;">
         <!--
         TODO  
             Design the dashboard
@@ -51,7 +52,7 @@
         <a class="btn btn-success" style="float: right; margin-right: 10pt;" href="{% url 'add_domain' %}">Add
             Domain</a>
         <p style="width: fit-content; margin-left: 10pt;">User: {{user.email}}</p>
-        <p>
+        <p></p>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -79,35 +80,33 @@
                 </tbody>
             </table>
         </div>
-        </p>
-        {% else %}
-        <link rel="stylesheet" href="{%static 'css/login.css'%}">
-        <div class="wrapper fadeInDown">
-            <div id="formContent">
-                <div class="fadeIn first mt-4 mb-2">
-                    <img src="{%static 'images/logo.svg'%}" id="icon" alt="User Icon"
-                        style="max-height: 15%;max-width: 15%;" />
-                </div>
-                <div class="fadeIn second mt-2 mb-2">
-                    <h2 class="fadeIn second">You are not logged in</h2>
-                </div>
-                <a class="btn mb-4 m-2 fadeIn fourth text-light" style="background-color: #fbc12c;"
-                    href="{%url 'register'%}">Register</a>
-                <a class="btn mb-4 m-2 fadeIn fourth text-light" style="background-color: #fbc12c;"
-                    href="{%url 'login'%}">Login</a>
-                <div class="msg fadeIn fifth" style="color: red;">{{ msg }}</div>
-                <script>
-                    register = (n) => window.location = n == 0 ? "{% url 'login'%}" : n == 1 ? "" : window.location;
-                </script>
-                <!-- <div id="formFooter">
+    </div>
+    {% else %}
+    <link rel="stylesheet" href="{%static 'css/login.css'%}">
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <div class="fadeIn first mt-4 mb-2">
+                <img src="{%static 'images/logo.svg'%}" id="icon" alt="User Icon"
+                    style="max-height: 15%;max-width: 15%;" />
+            </div>
+            <div class="fadeIn second mt-2 mb-2">
+                <h2 class="fadeIn second">You are not logged in</h2>
+            </div>
+            <a class="btn mb-4 m-2 fadeIn fourth text-light" style="background-color: #fbc12c;"
+                href="{%url 'register'%}">Register</a>
+            <a class="btn mb-4 m-2 fadeIn fourth text-light" style="background-color: #fbc12c;"
+                href="{%url 'login'%}">Login</a>
+            <div class="msg fadeIn fifth" style="color: red;">{{ msg }}</div>
+            <script>
+                register = (n) => window.location = n == 0 ? "{% url 'login'%}" : n == 1 ? "" : window.location;
+            </script>
+            <!-- <div id="formFooter">
                     {%block footer%}
                     {%endblock%}
                 </div> -->
-            </div>
         </div>
-        {% endif %}
-
     </div>
+    {% endif %}
     {%endblock%}
 </body>
 
