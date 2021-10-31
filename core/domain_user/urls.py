@@ -11,4 +11,5 @@ urlpatterns = [
     path("api/check_permission/", views.check_permission, name="check_permission"),
     path("edit_domain/<str:domain_key>/", views.edit_domain, name="edit_domain"),
     path("delete_domain/<str:domain_key>/", views.delete_domain, name="delete_domain"),
+    path("list_domain/", views.list_domain, name="list_domain"),
 ]

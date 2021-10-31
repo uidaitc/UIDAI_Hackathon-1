@@ -58,8 +58,21 @@ def register(request):
 def dashboard(request):
     data = {}
     if request.user.is_authenticated:
-        data["domains"] = Domain.objects.filter(user=request.user)
-    return render(request, "domain_user/dashboard.html", data)
+        domains = Domain.objects.filter(user=request.user)
+        data = []
+        for i in domains:
+            temp = {}
+            temp["domain"] = i.domain
+            temp["domain_key"] = i.domain_key
+            temp["ekycxml_endpoint"] = i.ekycxml_endpoint
+            t = i.permission.split(",")
+            t1 = []
+            for j in t:
+                if j != "":
+                    t1.append(j)
+            temp["permission"] = ", ".join(t1)
+            data.append(temp)
+        return render(request, "domain_user/dashboard.html", {"domains": data})
 
 
 @csrf_exempt
@@ -95,11 +108,11 @@ def add_domain(request):
             return render(request, "domain_user/domain_add.html")
         elif request.method == "POST":
             temp = []
-            for i in range(1, 6):
+            for i in range(1, 5):
                 try:
                     temp.append(request.POST[f"perm{i}"])
                 except:
-                    pass
+                    temp.append("")
             perm = ",".join(temp)
             Domain.objects.create(
                 domain=request.POST["domain"],
@@ -122,11 +135,11 @@ def edit_domain(request, domain_key):
             temp["permission"] = []
             perm = domain.permission.split(",")
             print(perm)
-            for i in range(1, 6):
-                if f"p{i}" in perm:
-                    temp["permission"].append("checked")
-                else:
+            for i in perm:
+                if i == "":
                     temp["permission"].append("")
+                else:
+                    temp["permission"].append("checked")
             print(temp)
             return render(
                 request, "domain_user/domain_edit.html", {"domain": temp}
@@ -160,3 +173,11 @@ def delete_domain(request, domain_key):
         return redirect(dashboard)
     else:
         return HttpResponse("Domain not found")
+
+
+def list_domain(request):
+    domains = Domain.objects.all()
+    data = []
+    for i in domains:
+        data.append("https://" + i.domain)
+    return render(request, "domain_user/domain_list.html", {"domains": data})
