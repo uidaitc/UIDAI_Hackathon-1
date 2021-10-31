@@ -318,7 +318,7 @@ def post_qr(request):
         Parameters
         ----------
             eKycXML: content of the xml file
-            apiKey: apiKey of the QR scan
+            ApiKey: ApiKey of the QR scan
 
     Returns
     -------
@@ -327,7 +327,7 @@ def post_qr(request):
     try:
         print(request.data)
         domain = Domain.objects.filter(
-            domain_key=request.data["apiKey"]
+            domain_key=request.data["ApiKey"]
         )
         if domain:
             # print(domain)

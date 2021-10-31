@@ -83,7 +83,7 @@
     <script src="{% static 'js/url_editor.js'%}"></script>
 
     <script>
-        var scannedText, apiKey;
+        var scannedText, ApiKey;
         if (localStorage.getItem("aadhaarZipBase64") != null) {
             document.getElementById("scan_qr_form").setAttribute("style", "");
             document.getElementById("ekycform").setAttribute("style", "display:none;");
@@ -107,9 +107,9 @@
             document.getElementById("messages").innerHTML = `Offline EKYC Not Found`;
         }
         function handleSCAN(scannedText) {
-            url = new URL(scannedText);
-            apiKey = url.searchParams.get('apiKey');
-            if (apiKey) {
+            url = new URL(decodedText);
+            ApiKey = url.searchParams.get('ApiKey');
+            if (ApiKey) {
                 document.getElementById("messages").innerHTML = "QR scanned successfully";
                 document.getElementById("password").removeAttribute("hidden");
                 document.getElementById("btn_submit").removeAttribute("hidden");
@@ -124,7 +124,7 @@
 
         async function sendData() {
             console.log(scannedText);
-            console.log(scannedText["apiKey"]);
+            console.log(scannedText["ApiKey"]);
             const reader = new zip.ZipReader(new zip.Data64URIReader(localStorage.getItem("aadhaarZipBase64")))
             const entries = await reader.getEntries()
             if (entries.length) {
@@ -146,7 +146,7 @@
                     url: "/sso/post_qr/",
                     data: JSON.stringify({
                         "eKycXML": text,
-                        "apiKey": apiKey,
+                        "ApiKey": ApiKey,
                     }),
                     headers: {
                         'Accept': 'application/json',
