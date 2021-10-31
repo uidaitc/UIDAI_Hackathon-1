@@ -98,9 +98,10 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     vid_data = data;
-                    document.getElementById("generate_vid_form").innerHTML = `
+                    document.getElementById("generate_vid_form").innerHTML += `
                     <p> ${data["vid"]} </p>
-                    `
+                    `;
+                    localStorage.setItem('vid',data['vid']);
                 },
                 error: function (data) {
                     console.log(data);
