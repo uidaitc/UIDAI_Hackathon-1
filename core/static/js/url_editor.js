@@ -64,7 +64,6 @@ function getModal(a) {
     modalhead.innerHTML = messages[a]['head'];
     modalbody.innerHTML = messages[a]['body'];
     modalbutton.innerHTML = messages[a]['button'];
-    // modalbutton.innerHTML = '<a href="' + url + '" class="btn btn-primary" id>Confirm</button>';
     modal.show()
 }
 function showMessage() {

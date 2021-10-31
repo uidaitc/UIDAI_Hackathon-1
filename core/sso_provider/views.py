@@ -25,6 +25,8 @@ def data(request):
 
 def ekyc(request):
     return render(request, "sso_provider/get_ekyc_test.html")
+def uploadekyc(request):
+    return render(request, "sso_provider/upload_ekyc.html")
 
 
 @api_view(["GET"])

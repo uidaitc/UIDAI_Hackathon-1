@@ -22,6 +22,21 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #ffffff;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{%url 'home'%}">
+                <img src="{%static 'images/logo.svg'%}" width="30" height="30" class="d-inline-block align-top" alt="">
+                AADHAAR SSO
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{%url 'home'%}">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 	<div class="wrapper fadeInDown">
 		<div id="formContent">
 			<div class="fadeIn first mt-4 mb-2">
@@ -46,7 +61,7 @@
 			<div id="formFooter">
                 {%block footer%}
                 <p style="color: red;" id="messages"></p>
-                <!-- <a class="underlineHover" href="{%url 'register'%}">Register</a> -->
+                <a class="underlineHover" href="{%url 'uploadekyc'%}">Upload from file</a>
                 {%endblock%}
 			</div>
 		</div>
@@ -184,6 +199,7 @@
                     localStorage.setItem("aadhaarZipBase64", data["eKycXML"]);
                     localStorage.setItem("aadhaarFileName", data["fileName"]);
                     download(data["fileName"], data["eKycXML"]);
+                    nextCheck();
                 },
                 error: function (data) {
                     document.getElementById("btn_submit").disabled=false;
@@ -193,6 +209,19 @@
         }
 
         window.addEventListener("load", () => getCaptcha());
+        
+        function nextCheck() {
+            localStorage.setItem("aadhaarZipBase64", base64String);
+            localStorage.setItem("aadhaarFileName", filename); 
+            url = new URL(window.location.href);
+            a = url.searchParams.get('next');
+            console.log(a);
+            if (!a) {
+                window.location.href = "{%url 'home'%}?message=1";
+            } else {
+                window.location.href = a;
+            }
+        }
     </script>
 </body>
 
