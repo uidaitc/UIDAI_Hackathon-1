@@ -79,6 +79,7 @@ def dashboard(request):
 @api_view(["POST"])
 def check_permission(request):
     try:
+        print(request.data)
         domain = Domain.objects.filter(
             domain=request.data["origin"], domain_key=request.data["apikey"]
         )
