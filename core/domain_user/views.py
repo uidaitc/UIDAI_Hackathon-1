@@ -72,7 +72,7 @@ def dashboard(request):
                     t1.append(j)
             temp["permission"] = ", ".join(t1)
             data.append(temp)
-        return render(request, "domain_user/dashboard.html", {"domains": data})
+    return render(request, "domain_user/dashboard.html", {"domains": data})
 
 
 @csrf_exempt
