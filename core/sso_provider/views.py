@@ -201,10 +201,16 @@ def get_data(request):
     """
 
     try:
+        if(request.data["uid"]):
+            uid = request.data["uid"]
+            vid = ""
+        else:
+            uid = request.data["vid"]
+            vid = request.data["vid"]
         body = {
             "txnId": request.data["txnId"],
             "otp": request.data["otp"],
-            "uid": request.data["uid"],
+            "uid": uid,
         }
         data = json.loads(
             requests.post(
@@ -215,7 +221,6 @@ def get_data(request):
         )
         print(data)
         data = ET.fromstring(data["eKycString"])[1]
-
         poi = data[0].attrib
         # *** poi format ***
         # {"dob": "dd-mm-yyyy", "gender": "M", "name": "xxxxx", "phone": "xxxxxxxxxx"}
@@ -235,9 +240,11 @@ def get_data(request):
         # }
         photo_base64 = data[3].text
         data = dict()
-        data["poi"] = poi
-        data["poa"] = poa
+        # 'vid', 'personal_data', 'address', 'photo'
+        data["personal_data"] = poi
+        data["address"] = poa
         data["photo"] = photo_base64
+        data["vid"] = vid
         return Response(data=data, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)

@@ -18,10 +18,173 @@
         integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
         crossorigin="anonymous"></script>
     <script src="{% static 'js/across-tabs.js'%}"></script>
+	<link rel="stylesheet" href="{%static 'css/login.css'%}">
 </head>
 
 <body>
-    <h1>SSO</h1>
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+			<div class="fadeIn first mt-4 mb-2">
+				<img src="{%static 'images/logo.svg'%}" id="icon" alt="User Icon" style="max-height: 15%;max-width: 15%;" />
+			</div>
+            {%block content%}
+                <div id="permissions" hidden>
+                    <div class="fadeIn first mb-2">
+                        <h2>permissions</h2>
+                    </div>
+                    
+                </div>
+                <div id="generate_data_form">
+                    <div class="fadeIn first mb-2">
+                        <h2>SSO</h2>
+                    </div>
+                    <input type="text" name="uid" id="uid" placeholder="uid">
+                    <img id="captcha">
+                    <button class="btn btn-warning text-light" onclick="getCaptcha()" id="captcha_reload">Reload</button>
+                    <input type="text" name="captcha_value" id="captcha_value" placeholder="captcha">
+                    <button class="btn btn-warning text-light mb-2" onclick="getOTP()" id="get_otp_btn">Get OTP</button>
+                    <input type="text" name="otp_value" id="otp_value" placeholder="otp" hidden>
+                    <button class="btn btn-warning text-light mb-2" type="submit" disabled hidden id="btn_submit" onclick="getData()">Submit</button>
+                </div>
+
+            {%endblock%}
+			<div id="formFooter">
+                {%block footer%}
+                <p style="color: red;" id="messages"></p>
+                <!-- <a class="underlineHover" href="{%url 'register'%}">Register</a> -->
+                {%endblock%}
+			</div>
+		</div>
+	</div>
+
+
+    <script>
+        document.getElementById('uid').value = localStorage.getItem('vid');
+        var captcha_data;
+        var otp_data;
+        var user_data;
+        function getCaptcha() {
+            $.ajax({
+                type: 'get',
+                url: '/sso/get_captcha',
+                data: JSON.stringify({ "langCode": "en", "captchaLength": "3", "captchaType": "2" }),
+                contentType: "application/json; charset=utf-8",
+                beforeSend: (data="")=>{
+                    console.log("beforesend captcha_reload");
+                    document.getElementById("captcha_reload").disabled=true;
+                },
+                success: function (data) {
+                    document.getElementById("captcha_reload").disabled=false;
+                    captcha_data = data;
+                    captcha.setAttribute('src', "data:image/jpg;base64," + data['captchaBase64String']);
+                },
+                error: function (data) {
+                    document.getElementById("captcha_reload").disabled=false;
+                    console.log(data);
+                }
+            });
+        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function getOTP() {
+            $.ajax({
+                type: 'post',
+                url: '/sso/get_otp/',
+                data: JSON.stringify({ "captchaTxnId": captcha_data["captchaTxnId"], "captcha_value": document.getElementById("captcha_value").value, "uid": document.getElementById("uid").value }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: (data="")=>{
+                    console.log("beforesend getOTP");
+                    document.getElementById("get_otp_btn").disabled=true;
+                    checkChild();
+                },
+                success: function (data) {
+                    document.getElementById("get_otp_btn").disabled=false;
+                    otp_data = data;
+                    document.getElementById("messages").innerHTML = data.message;
+                    if(data.status=='Success'){
+                        document.getElementById("otp_value").removeAttribute("hidden");
+                        document.getElementById("btn_submit").removeAttribute("disabled");
+                        document.getElementById("btn_submit").removeAttribute("hidden")
+                    }else if(data.status=="Failure"){
+                        document.getElementById("otp_value").setAttribute("hidden",true);
+                        document.getElementById("btn_submit").setAttribute("disabled",true);
+                        document.getElementById("btn_submit").setAttribute("hidden",true)
+                    }
+                },
+                error: function (data) {
+                    document.getElementById("get_otp_btn").disabled=false;
+                    document.getElementById("messages").innerHTML = data.message;
+                    console.log(data);
+                }
+            });
+        }
+        function getData() {
+            $.ajax({
+                type: 'post',
+                url: '/sso/get_data/',
+                data: JSON.stringify({
+                    "uid": document.getElementById("uid").value,
+                    "otp": document.getElementById("otp_value").value,
+                    "txnId": otp_data["txnId"]
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                contentType: "application/json; charset=utf-8",
+                beforeSend: (data="")=>{
+                    console.log("beforesend getData");
+                    document.getElementById("btn_submit").disabled=true;
+                },
+                success: function (data) {
+                    document.getElementById("btn_submit").disabled=false;
+                    user_data = data;
+                    document.getElementById("generate_vid_form").innerHTML = `
+                    <p> ${data["personal_data"]["dob"]} </p>
+                    <p> ${data["personal_data"]["gender"]} </p>
+                    <p> ${data["personal_data"]["name"]} </p>
+                    <p> ${data["personal_data"]["phone"]} </p>
+                    <p> ${data["address"]["co"]} </p>
+                    <p> ${data["address"]["country"]} </p>
+                    <p> ${data["address"]["dist"]} </p>
+                    <p> ${data["address"]["house"]} </p>
+                    <p> ${data["address"]["lm"]} </p>
+                    <p> ${data["address"]["pc"]} </p>
+                    <p> ${data["address"]["state"]} </p>
+                    <p> ${data["address"]["street"]} </p>
+                    <p> ${data["address"]["vtc"]} </p>
+                    <img src="data:image/jpg;base64,${data["photo"]}">
+                    `;
+                    sendToParent({"head":"data","body":data});
+                    closeTab();
+                },
+                error: function (data) {
+                    document.getElementById("btn_submit").disabled=false;
+                    console.log(data);
+                }
+            });
+        }
+        window.addEventListener("load", () => getCaptcha());
+    </script>
     <div id=info></div>
     <script type="text/javascript">
         var child = new AcrossTabs.default.Child({
@@ -55,12 +218,11 @@
                 "name": tabInfo.name,
             };
             console.log(data);
-            sendToParent({ "head": "loaded", "body": "sendPermissions" })
-            // showList(data);
+            sendToParent({ "head": "sendPermissions", "body":"connection initialized","location":window.location.href });
         }
         function onReady() {
             // Fetch vid,phone no. and ekyc from localstorage. If not present, ask user to enter vid/uid for ekyc generation.
-            var data = 'Page Loaded';
+            console.log("onReady");
         }
         var permissions;
         function onParentCommunication(dataReceived) {
@@ -80,10 +242,13 @@
                 permissions = data.body;
             }
         }
-
-        function showList(data) {
-            html += data;
-            document.getElementById('info').innerHTML = html;
+        checkChild=()=>{
+            console.log("checkChild");
+            tabInfo=child.getTabInfo();
+            if(!tabInfo.id){
+                console.log("Login Failed");
+                window.location.href = "/?message=0";
+            }
         }
     </script>
 </body>
