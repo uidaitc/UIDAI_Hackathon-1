@@ -107,7 +107,7 @@
             document.getElementById("messages").innerHTML = `Offline EKYC Not Found`;
         }
         function handleSCAN(scannedText) {
-            url = new URL(decodedText);
+            url = new URL(scannedText);
             apiKey = url.searchParams.get('apiKey');
             if (apiKey) {
                 document.getElementById("messages").innerHTML = "QR scanned successfully";
