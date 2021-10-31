@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
@@ -6,7 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
-
+from .forms import DomainForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def loggin(request):
@@ -58,7 +60,7 @@ def dashboard(request):
     data={}
     if request.user.is_authenticated:
         data["domains"]=Domain.objects.filter(user=request.user)
-    return render(request, "domain_user/dashboard.html")
+    return render(request, "domain_user/dashboard.html",data)
 
 
 @csrf_exempt
@@ -83,3 +85,30 @@ def check_permission(request):
             )
     except:
         return Response(data={}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@login_required
+def add_domain(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("Unauthorized")
+    context = {}
+    print("ADD DOMAIN")
+    if request.method == 'GET':
+        form = DomainForm()
+        context["form"] = form
+        context["fntype"] = "Create"
+        return render(request, 'domain_user/domain_add.html', context)
+    elif request.method == 'POST':
+        print("POST")
+        user = CustomUser.objects.get(user = request.user)
+        form = DomainForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            instance.user = user
+            instance.save()
+            return HttpResponseRedirect('/user/?message=1')
+        else:
+            print(form.errors)
+            context["form"] = form
+            context["fntype"] = "Create"
+            return render(request, 'domain_add.html', context)

@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,48 +6,99 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link rel="stylesheet" href="{%static 'css/login.css'%}">
+    <title>Get VID</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/combine/npm/@zip.js/zip.js@2.3.18/dist/zip.min.js,npm/@zip.js/zip.js@2.3.18/dist/zip.min.js"></script>
+    <script src="{% static 'js/across-tabs.js'%}"></script>
 </head>
 
 <body>
-    <div id="reader" style="width: 600px;"></div>
+	<div class="wrapper fadeInDown">
+		<div id="formContent">
+			<div class="fadeIn first mt-4 mb-2">
+				<img src="{%static 'images/logo.svg'%}" id="icon" alt="User Icon" style="max-height: 15%;max-width: 15%;" />
+			</div>
+            {%block content%}
+                <div id="scan_qr_form">
+                    <div class="fadeIn first mb-2">
+                        <h2>Scan to send E-KYC</h2>
+                    </div>
+                    <div class="fadeIn first d-flex justify-content-center">
+                        <div id="reader" style="width: 100%;"></div>
+                    </div>  
+                    <input type="password" name="password" id="password" placeholder="Password" hidden maxlength = "4">
+                    <button class="btn btn-warning text-light mb-2" type="submit" disabled hidden id="btn_submit" onclick="sendData()">Submit</button>
+                </div>
+                <div id="ekycform">
+                    <p>E-KYC file not found</p>
+                    <a class="btn btn-warning text-light mb-2" id="btn_ekyc" href="{%url 'ekyc'%}?next={%url 'scan_qr'%}">Generate or Upload E-KYC</a>
+                </div>
+            {%endblock%}
+			<div id="formFooter">
+                {%block footer%}
+                <p style="color: red;" id="messages"></p>
+                {%endblock%}
+			</div>
+		</div>
+	</div>
+
+<body>
+    
 </body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script
-    src="https://cdn.jsdelivr.net/combine/npm/@zip.js/zip.js@2.3.18/dist/zip.min.js,npm/@zip.js/zip.js@2.3.18/dist/zip.min.js"></script>
 
 <!-- https://github.com/mebjas/html5-qrcode -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="{% static 'js/url_editor.js'%}"></script>
+
 <script>
-    var main;
+    var scannedText;
     if (localStorage.getItem("aadhaarZipBase64") != null) {
+        document.getElementById("scan_qr_form").setAttribute("style","");
+        document.getElementById("ekycform").setAttribute("style","display:none;");
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-            // document.getElementById("reader").innerHTML = `<p> ${decodedText} </p>`
-            document.getElementsByTagName("body")[0].innerHTML = `
-                <input type="password" placeholder="password" id="password">
-                <button onclick="sendData()">Send</button>
-            `
-            main = JSON.parse(decodedText);
-            html5QrCode.stop().then((ignore) => {
-                console.log(decodedText);
-                console.log("Scanner stopped");
-            }).catch((err) => {
-                console.log("Can't stop the scanner");
-            });
+            console.log(decodedText);
+            scannedText = JSON.parse(decodedText);
+            if(scannedText["apiKey"]){
+                document.getElementById("messages").innerHTML = "QR scanned successfully";
+                document.getElementById("password").removeAttribute("hidden");
+                document.getElementById("btn_submit").removeAttribute("hidden");
+                document.getElementById("btn_submit").removeAttribute("disabled");
+                html5QrCode.clear();
+            }else{
+                document.getElementById("messages").innerHTML = "Invalid QR Code";
+                document.getElementById("scan_qr_form").setAttribute("style","");
+                document.getElementById("ekycform").setAttribute("style","display:none;");
+            }
+            // html5QrCode.stop().then((ignore) => {
+            //     // console.log(decodedText);
+            //     console.log("Scanner stopped");
+            //     document.getElementById("reader").setAttribute("hidden",true);
+            // }).catch((err) => {
+            //     console.log("Can't stop the scanner");
+            // });
         };
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     } else {
-        document.getElementsByTagName("body")[0].innerHTML = `
-            <p> Upload or download the file again </p>
-        `;
+
+        document.getElementById("messages").innerHTML = `Offline EKYC Not Found`;
     }
 
     async function sendData() {
-        console.log(main);
-        console.log(main["apiKey"]);
+        console.log(scannedText);
+        console.log(scannedText["apiKey"]);
         const reader = new zip.ZipReader(new zip.Data64URIReader(localStorage.getItem("aadhaarZipBase64")))
         const entries = await reader.getEntries()
         if (entries.length) {
@@ -68,7 +120,7 @@
                 url: "/sso/post_qr/",
                 data: JSON.stringify({
                     "eKycXML": text,
-                    "apiKey": main["apiKey"],
+                    "apiKey": scannedText["apiKey"],
                 }),
                 headers: {
                     'Accept': 'application/json',
@@ -77,14 +129,12 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     console.log(data);
-                    document.getElementsByTagName("body")[0].innerHTML = `
-                        <p> Uploaded successfully </p>
-                    `;
+                    
+                    document.getElementById("messages").innerHTML = `Uploaded successfully`;
                 },
                 error: function (data) {
-                    document.getElementsByTagName("body")[0].innerHTML = `
-                        <p> Something went wrong </p>
-                    `
+                    console.log(data);
+                    document.getElementById("messages").innerHTML = `Something went wrong`;
                 }
             });
         }

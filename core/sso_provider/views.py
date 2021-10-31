@@ -12,7 +12,7 @@ from domain_user.models import Domain
 
 
 def index(request):
-    return render(request, "sso_provider/index.html")
+    return render(request, "sso_provider/sso.html")
 
 
 def vid(request):

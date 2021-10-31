@@ -22,22 +22,26 @@
         body {
             color: #5a5a5a;
         }
+
         .carousel {
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
+
         .carousel-caption {
             bottom: 3rem;
             z-index: 10;
         }
+
         .carousel-item {
-            height: 32rem;
+            height: 24rem;
         }
+
         .carousel-item>img {
             position: absolute;
             top: 0;
             left: 0;
             min-width: 100%;
-            height: 32rem;
+            height: 24rem;
         }
     </style>
 </head>
@@ -64,29 +68,29 @@
     <main role="main">
         <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class=""
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"
                     aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"
                     class=""></button>
-                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"
-                    class="active" aria-current="true"></button>
             </div>
             <div class="carousel-inner">
-                <div class="carousel-item active" style="background-image: url('{%static 'images/aadhaar-1.jpg'%}'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+                <div class="carousel-item active"
+                    style="background-image: url('{%static 'images/aadhaar-1.jpg'%}'); background-position: center; background-repeat: no-repeat; background-size: cover;">
                     <div class="container">
                         <div class="carousel-caption text-start">
-                            <h1 class="text-dark">AADHAAR SSO</h1>
-                            <p class="text-dark">Use AADHAAR to manage all your authentication needs.</p>
+                            <h1 class="text-dark fw-bold">AADHAAR SSO</h1>
+                            <p class="text-dark fw-bold">Use AADHAAR to manage all your authentication needs.</p>
                             <p><a class="btn btn-lg btn-primary" href="{%url 'vid'%}">Get VID Now »</a></p>
                         </div>
                     </div>
                 </div>
-                <div class="carousel-item" style="background-image: url('{%static 'images/aadhaar.jpg'%}'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+                <div class="carousel-item"
+                    style="background-image: url('{%static 'images/aadhaar.jpg'%}'); background-position: center; background-repeat: no-repeat; background-size: cover;">
                     <div class="container">
                         <div class="carousel-caption text-end">
-                            <h1 class="text-dark">Website Owner?</h1>
-                            <p class="text-dark">Get your website AADHAAR ready now.</p>
-                            <p><a class="btn btn-lg btn-primary" href="{%url 'dashboard'%}">DOMAIN REGISTRAR »</a></p>
+                            <h1 class="text-dark fw-bold">Website Owner?</h1>
+                            <p class="text-dark fw-bold">Get your website AADHAAR ready now.</p>
+                            <p><a class="btn btn-lg btn-primary" href="{%url 'dashboard'%}">Domain Registration »</a></p>
                         </div>
                     </div>
                 </div>
@@ -99,6 +103,82 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
+        </div>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
+            body {
+                font-family: 'Maven Pro', sans-serif;
+                background-color: #f4f4f4
+;
+            }
+            .add {
+                border-radius: 20px
+            }
+
+            .card {
+                border: none;
+                border-radius: 10px;
+                transition: all 1s;
+                cursor: pointer
+            }
+
+            .card:hover {
+                -webkit-box-shadow: 3px 5px 17px -4px #777777;
+                box-shadow: 3px 5px 17px -4px #777777
+            }
+
+            .ratings i {
+                color: yellow;
+            }
+
+            .apointment a {
+                border-radius: 20px;
+                background-color: #eee;
+                color: #000;
+                border-color: #eee;
+                font-size: 13px
+            }
+        </style>
+        <div class="d-flex justify-content-between m-3"> <span>SSO SERVICES</span></div>
+        <div class="row g-2 ">
+            <div class="col-md-3">
+                <div class="card py-3 m-2 text-center h-90">
+                    <div class="img mb-2"> <img src="{%static 'images/vid.jpg'%}" width="70" class="rounded-circle"> </div>
+                    <h5 class="mb-0">Generate VID</h5>
+                    <div class="ratings mt-2"><small>VID is your masked AADHAR Number</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-info text-uppercase"
+                            href="{% url 'vid' %}">Generate</a></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card py-3 m-2 text-center h-90">
+                    <div class="img mb-2"> <img src="{%static 'images/eKyc.jpg'%}" width="70" class="rounded-circle"> </div>
+                    <h5 class="mb-0">Generate Offline E-KYC</h5>
+                    <div class="ratings mt-2"><small>Offline E-KYC document can be submitted to services.</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-info text-uppercase"
+                            href="{% url 'ekyc' %}">Generate</a></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card py-3 m-2 text-center h-90">
+                    <div class="img mb-2"> <img src="{%static 'images/er_scanner.jpg'%}" width="70" class="rounded-circle"> </div>
+                    <h5 class="mb-0">Scan QR</h5>
+                    <div class="ratings mt-2"><small>Scan to submit E-KYC</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-info text-uppercase"
+                            href="{% url 'scan_qr' %}">Scan</a></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card py-3 m-2 text-center h-90">
+                    <div class="img mb-2"> <img src="{%static 'images/list.jpg'%}" width="70" class="rounded-circle"> </div>
+                    <h5 class="mb-0">Websites</h5>
+                    <div class="ratings mt-2"><small>Sites That Support AADHAAR-SSO</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-info text-uppercase"
+                            href="{% url 'vid' %}">Show All</a></div>
+                </div>
+            </div>
+        </div>
         </div>
 
         <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -122,93 +202,15 @@
             </div>
         </div>
     </main>
+    <script src="{% static 'js/url_editor.js' %}"></script>
     <script>
-        var objQueryString = {};
-        function getParameterByName(name = "") {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
-        function removeQString(key) {
-            var urlValue = document.location.href;
-            var searchUrl = location.search;//Get query string value
-            if (key != "") {
-                oldValue = getParameterByName(key);
-                removeVal = key + "=" + oldValue;
-                if (searchUrl.indexOf('?' + removeVal + '&') != "-1") {
-                    urlValue = urlValue.replace('?' + removeVal + '&', '?');
-                }
-                else if (searchUrl.indexOf('&' + removeVal + '&') != "-1") {
-                    urlValue = urlValue.replace('&' + removeVal + '&', '&');
-                }
-                else if (searchUrl.indexOf('?' + removeVal) != "-1") {
-                    urlValue = urlValue.replace('?' + removeVal, '');
-                }
-                else if (searchUrl.indexOf('&' + removeVal) != "-1") {
-                    urlValue = urlValue.replace('&' + removeVal, '');
-                }
-            }
-            else {
-                var searchUrl = location.search;
-                urlValue = urlValue.replace(searchUrl, '');
-            }
-            history.replaceState({ state: 1, rand: Math.random() }, '', urlValue);
-        }
-
-        function changeUrl(key, value) {
-            var searchUrl = location.search;  //Get query string value
-            if (searchUrl.indexOf("?") == "-1") {
-                var urlValue = '?' + key + '=' + value;
-                history.pushState({ state: 1, rand: Math.random() }, '', urlValue);
-            }
-            else {  //Check for key in query string, if not present
-                if (searchUrl.indexOf(key) == "-1") {
-                    var urlValue = searchUrl + '&' + key + '=' + value;
-                }
-                else {	//If key present in query string
-                    oldValue = getParameterByName(key);
-                    if (searchUrl.indexOf("?" + key + "=") != "-1") {
-                        urlValue = searchUrl.replace('?' + key + '=' + oldValue, '?' + key + '=' + value);
-                    }
-                    else {
-                        urlValue = searchUrl.replace('&' + key + '=' + oldValue, '&' + key + '=' + value);
-                    }
-                }
-                history.replaceState({ state: 1, rand: Math.random() }, '', urlValue);
-            }
-            objQueryString.key = value;
-        }
         messages = {
             '0': {
                 'head': 'SSO Error: Unauthorized Parent',
                 'body': 'The SSO cannot be accessed as a standalone application.',
                 'button': `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
             },
-        }
-        function getModal(a) {
-            console.log(a);
-            var modal = new bootstrap.Modal(document.getElementById('modal'))
-            modalhead = document.getElementById('modaltitle');
-            modalbody = document.getElementById('modalbody');
-            modalbutton = document.getElementById('modalbutton');
-            modalhead.innerHTML = messages[a]['head'];
-            modalbody.innerHTML = messages[a]['body'];
-            modalbutton.innerHTML = messages[a]['button'];
-            // modalbutton.innerHTML = '<a href="' + url + '" class="btn btn-primary" id>Confirm</button>';
-            modal.show()
-        }
-
-        function showMessage() {
-            url = new URL(window.location.href);
-            a = url.searchParams.get('message');
-            if (a) {
-                getModal(a);
-                console.log(a);
-            }
-            removeQString('message')
-        }
+        } 
         window.addEventListener('load', showMessage);
     </script>
 </body>

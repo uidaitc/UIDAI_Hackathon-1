@@ -34,6 +34,5 @@ class Domain(models.Model):
     permission = models.CharField(max_length=200, blank=True, null=True) #permissions
     domain_key = models.CharField(max_length=100) #aipkey
     ekycxml_endpoint = models.CharField(max_length=200, blank=True)
-
     def __str__(self):
         return self.user.email + " - " + self.domain
