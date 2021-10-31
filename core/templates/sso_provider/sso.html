@@ -158,7 +158,7 @@
                 success: function (data) {
                     document.getElementById("btn_submit").disabled=false;
                     user_data = data;
-                    document.getElementById("generate_vid_form").innerHTML = `
+                    document.getElementById("generate_data_form").innerHTML = `
                     <p> ${data["personal_data"]["dob"]} </p>
                     <p> ${data["personal_data"]["gender"]} </p>
                     <p> ${data["personal_data"]["name"]} </p>
