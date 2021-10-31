@@ -63,6 +63,8 @@
                     </li>
                 </ul>
             </div>
+            {% if user.is_authenticated %}
+            {% endif %}
         </div>
     </nav>
     <main role="main">
@@ -175,7 +177,7 @@
                     <h5 class="mb-0">Websites</h5>
                     <div class="ratings mt-2"><small>Sites That Support AADHAAR-SSO</small> </div>
                     <div class="mt-4 apointment"> <a class="btn btn-info text-uppercase"
-                            href="{% url 'vid' %}">Show All</a></div>
+                            href="{% url 'list_domain' %}">Show All</a></div>
                 </div>
             </div>
         </div>

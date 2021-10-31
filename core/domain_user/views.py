@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
-from .forms import DomainForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -57,16 +56,30 @@ def register(request):
 
 
 def dashboard(request):
-    data={}
+    data = {}
     if request.user.is_authenticated:
-        data["domains"]=Domain.objects.filter(user=request.user)
-    return render(request, "domain_user/dashboard.html",data)
+        domains = Domain.objects.filter(user=request.user)
+        data = []
+        for i in domains:
+            temp = {}
+            temp["domain"] = i.domain
+            temp["domain_key"] = i.domain_key
+            temp["ekycxml_endpoint"] = i.ekycxml_endpoint
+            t = i.permission.split(",")
+            t1 = []
+            for j in t:
+                if j != "":
+                    t1.append(j)
+            temp["permission"] = ", ".join(t1)
+            data.append(temp)
+    return render(request, "domain_user/dashboard.html", {"domains": data})
 
 
 @csrf_exempt
 @api_view(["POST"])
 def check_permission(request):
     try:
+        print(request.data)
         domain = Domain.objects.filter(
             domain=request.data["origin"], domain_key=request.data["apikey"]
         )
@@ -91,24 +104,81 @@ def check_permission(request):
 def add_domain(request):
     if not request.user.is_authenticated:
         return HttpResponse("Unauthorized")
-    context = {}
-    print("ADD DOMAIN")
-    if request.method == 'GET':
-        form = DomainForm()
-        context["form"] = form
-        context["fntype"] = "Create"
-        return render(request, 'domain_user/domain_add.html', context)
-    elif request.method == 'POST':
-        print("POST")
-        user = CustomUser.objects.get(user = request.user)
-        form = DomainForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            instance.user = user
-            instance.save()
-            return HttpResponseRedirect('/user/?message=1')
+    else:
+        if request.method == "GET":
+            return render(request, "domain_user/domain_add.html")
+        elif request.method == "POST":
+            temp = []
+            for i in range(1, 5):
+                try:
+                    temp.append(request.POST[f"perm{i}"])
+                except:
+                    temp.append("")
+            perm = ",".join(temp)
+            Domain.objects.create(
+                domain=request.POST["domain"],
+                ekycxml_endpoint=request.POST["ekycxml_endpoint"],
+                permission=perm,
+                user=request.user,
+            )
+            return redirect(dashboard)
+
+
+@login_required
+def edit_domain(request, domain_key):
+    if request.method == "GET":
+        domain = Domain.objects.filter(domain_key=domain_key, user=request.user)
+        if domain:
+            domain = domain[0]
+            temp = {}
+            temp["domain"] = domain.domain
+            temp["ekycxml_endpoint"] = domain.ekycxml_endpoint
+            temp["permission"] = []
+            perm = domain.permission.split(",")
+            print(perm)
+            for i in perm:
+                if i == "":
+                    temp["permission"].append("")
+                else:
+                    temp["permission"].append("checked")
+            print(temp)
+            return render(
+                request, "domain_user/domain_edit.html", {"domain": temp}
+            )
         else:
-            print(form.errors)
-            context["form"] = form
-            context["fntype"] = "Create"
-            return render(request, 'domain_add.html', context)
+            return HttpResponse("Domain not found")
+    if request.method == "POST":
+        temp = []
+        for i in range(1, 6):
+            try:
+                temp.append(request.POST[f"perm{i}"])
+            except:
+                pass
+        perm = ",".join(temp)
+        domain = Domain.objects.get(
+            domain_key=domain_key
+        )
+        domain.domain = request.POST["domain"]
+        domain.ekycxml_endpoint = request.POST["ekycxml_endpoint"]
+        domain.permission = perm
+        domain.save()
+        return redirect(dashboard)
+
+
+@login_required
+def delete_domain(request, domain_key):
+    domain = Domain.objects.filter(domain_key=domain_key, user=request.user)
+    if domain:
+        domain = domain[0]
+        domain.delete()
+        return redirect(dashboard)
+    else:
+        return HttpResponse("Domain not found")
+
+
+def list_domain(request):
+    domains = Domain.objects.all()
+    data = []
+    for i in domains:
+        data.append("https://" + i.domain)
+    return render(request, "domain_user/domain_list.html", {"domains": data})

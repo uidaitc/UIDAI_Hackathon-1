@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
+from uuid import uuid4
 
 # Create your models here.
 
@@ -29,10 +30,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Domain(models.Model):
-    domain = models.CharField(max_length=200) #origin
+    domain_key = models.UUIDField(primary_key=True, default=uuid4, unique=True)  # aipkey
+    domain = models.CharField(max_length=200)  # origin
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    permission = models.CharField(max_length=200, blank=True, null=True) #permissions
-    domain_key = models.CharField(max_length=100) #aipkey
+    permission = models.CharField(max_length=200, blank=True, null=True)  # permissions
     ekycxml_endpoint = models.CharField(max_length=200, blank=True)
+
     def __str__(self):
         return self.user.email + " - " + self.domain

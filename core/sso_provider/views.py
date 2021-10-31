@@ -52,16 +52,16 @@ def get_captcha(request):
     """
 
     try:
-        data = json.loads(
-            requests.post(
+        data = requests.post(
                 "https://stage1.uidai.gov.in/unifiedAppAuthService/api/v2/get/captcha",
                 json={"langCode": "en", "captchaLength": "3", "captchaType": "2"},
                 headers={"Content-Type": "application/json"},
             ).text
-        )
-        print(data)
+        print(str(data))
+        data = json.loads(data)
         return Response(data=data, status=status.HTTP_200_OK)
-    except:
+    except Exception as e:
+        print(e)
         return Response(data={}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
