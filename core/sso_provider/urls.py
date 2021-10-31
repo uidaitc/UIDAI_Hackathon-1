@@ -11,4 +11,6 @@ urlpatterns = [
     path("vid/", views.vid, name="vid"),
     path("data/", views.data, name="data"),
     path("ekyc/", views.ekyc, name="ekyc"),
+    path("scan_qr/", views.scan_qr, name="scan_qr"),
+    path("post_qr/", views.post_qr, name="post_qr"),
 ]

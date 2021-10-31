@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="reader" style="width: 600px;"></div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/combine/npm/@zip.js/zip.js@2.3.18/dist/zip.min.js,npm/@zip.js/zip.js@2.3.18/dist/zip.min.js"></script>
+
+<!-- https://github.com/mebjas/html5-qrcode -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    var main;
+    if (localStorage.getItem("aadhaarZipBase64") != null) {
+        const html5QrCode = new Html5Qrcode("reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            // document.getElementById("reader").innerHTML = `<p> ${decodedText} </p>`
+            document.getElementsByTagName("body")[0].innerHTML = `
+                <input type="password" placeholder="password" id="password">
+                <button onclick="sendData()">Send</button>
+            `
+            main = JSON.parse(decodedText);
+            html5QrCode.stop().then((ignore) => {
+                console.log(decodedText);
+                console.log("Scanner stopped");
+            }).catch((err) => {
+                console.log("Can't stop the scanner");
+            });
+        };
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+    } else {
+        document.getElementsByTagName("body")[0].innerHTML = `
+            <p> Upload or download the file again </p>
+        `;
+    }
+
+    async function sendData() {
+        console.log(main);
+        console.log(main["apiKey"]);
+        const reader = new zip.ZipReader(new zip.Data64URIReader(localStorage.getItem("aadhaarZipBase64")))
+        const entries = await reader.getEntries()
+        if (entries.length) {
+            // get first entry content as text by using a TextWriter
+            const text = await entries[0].getData(
+                // writer
+                new zip.TextWriter(),
+                // options
+                {
+                    password: document.getElementById("password").value,
+                    onprogress: (index, max) => {
+                        // onprogress callback
+                    }
+                }
+            );
+            // text contains the entry data as a String
+            $.ajax({
+                type: 'post',
+                url: "/sso/post_qr/",
+                data: JSON.stringify({
+                    "eKycXML": text,
+                    "apiKey": main["apiKey"],
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    console.log(data);
+                    document.getElementsByTagName("body")[0].innerHTML = `
+                        <p> Uploaded successfully </p>
+                    `;
+                },
+                error: function (data) {
+                    document.getElementsByTagName("body")[0].innerHTML = `
+                        <p> Something went wrong </p>
+                    `
+                }
+            });
+        }
+    }
+
+</script>
+
+</html>
