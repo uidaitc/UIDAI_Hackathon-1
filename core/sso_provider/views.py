@@ -330,7 +330,7 @@ def post_qr(request):
             domain_key=request.data["ApiKey"]
         )
         if domain:
-            # print(domain)
+            print(domain[0].ekycxml_endpoint)
             body = {
                 "eKycXML": request.data["eKycXML"],
             }
