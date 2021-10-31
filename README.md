@@ -1,6 +1,6 @@
 # UIDAI_Hackathon
 
-This is an appointment booking webapp made with django.
+This is an uidai aadhaar sso webapp made with django.
 
 ### Live Demo : [![UIDAI Hackathon](./core/static/images/favicon.ico)](https://github.com/Rajarshi07/UIDAI_Hackathon)
 
