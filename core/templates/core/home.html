@@ -63,6 +63,9 @@
                     </li>
                 </ul>
             </div>
+            {% if user.is_authenticated %}
+            <button class="btn btn-danger" type="submit">Logout</button>
+            {% endif %}
         </div>
     </nav>
     <main role="main">

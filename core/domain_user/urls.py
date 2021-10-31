@@ -7,6 +7,8 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("login/", views.loggin, name="login"),
     path("logout/", LogoutView.as_view(next_page="dashboard"), name="logout"),
-    path('adddomain/',views.add_domain,name='adddomain'),
+    path('add_domain/',views.add_domain,name='add_domain'),
     path("api/check_permission/", views.check_permission, name="check_permission"),
+    path("edit_domain/<str:domain_key>/", views.edit_domain, name="edit_domain"),
+    path("delete_domain/<str:domain_key>/", views.delete_domain, name="delete_domain"),
 ]
